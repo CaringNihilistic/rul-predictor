@@ -1,0 +1,335 @@
+{
+  "version": "0.1-starter",
+  "disclaimer": "Starter knowledge base compiled from general reliability and maintenance engineering practice (Weibull life models, ISO 10816-style vibration severity zones, typical OEM-style service intervals). Values are INDICATIVE. Verify against OEM manuals and your plant's own failure history before operational use.",
+  "components": [
+    {
+      "id": "centrifugal-pump", "name": "Centrifugal Pump",
+      "aliases": ["pump", "pumps", "water pump", "process pump", "feed pump", "boiler feed pump", "centrifugal pumps", "coolant pump"],
+      "category": "Rotating equipment",
+      "description": "Converts shaft power into fluid head with an impeller in a volute casing. Reliability is dominated by bearings, mechanical seals and hydraulic condition such as cavitation and recirculation.",
+      "life": {"eta": 45000, "beta": 2.0},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS"}, "temperature": {"warn": 80, "alarm": 95, "unit": "C bearing housing"}},
+      "failure_modes": [
+        {"mode": "Bearing wear or lubrication failure", "cause": "Contaminated or insufficient lubricant, misalignment, overload", "signals": ["vibration", "temperature", "hours"], "indicator": "Rising bearing temperature and high-frequency vibration"},
+        {"mode": "Mechanical seal failure", "cause": "Dry running, face wear, flush loss, shaft deflection", "signals": ["temperature", "pressure", "hours"], "indicator": "Leakage at the gland, rising seal-chamber temperature"},
+        {"mode": "Cavitation damage", "cause": "Low NPSH margin, throttled suction, blocked strainer", "signals": ["vibration", "pressure"], "indicator": "Gravel-like noise, unstable discharge pressure, pitted vanes"},
+        {"mode": "Impeller and wear-ring wear", "cause": "Erosion by solids, corrosion, long service", "signals": ["pressure", "hours"], "indicator": "Falling head and flow at the same speed, higher power draw"},
+        {"mode": "Misalignment or imbalance", "cause": "Poor installation, pipe strain, soft foot, deposits on impeller", "signals": ["vibration"], "indicator": "Strong 1x or 2x running-speed vibration"}
+      ],
+      "maintenance": [
+        {"task": "Vibration, temperature and leakage walk-round check", "interval_h": 250, "type": "inspect"},
+        {"task": "Bearing lubrication check and oil sample", "interval_h": 2000, "type": "inspect"},
+        {"task": "Mechanical seal inspection or replacement", "interval_h": 8000, "type": "service"},
+        {"task": "Shaft alignment verification", "interval_h": 8000, "type": "inspect"},
+        {"task": "Impeller, wear-ring and bearing overhaul", "interval_h": 25000, "type": "overhaul"}
+      ],
+      "spares": ["Mechanical seal kit", "Bearing set", "Wear rings", "Impeller", "Coupling element"]
+    },
+    {
+      "id": "impeller", "name": "Impeller",
+      "aliases": ["impellers", "pump impeller", "compressor impeller", "fan impeller", "rotor blades"],
+      "category": "Rotating equipment",
+      "description": "Bladed rotor that transfers energy to the fluid. Damage is typically progressive: erosion, cavitation pitting, corrosion and fatigue cracking of vanes, which leads to imbalance and performance loss.",
+      "life": {"eta": 60000, "beta": 1.8},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS"}, "temperature": {"warn": 85, "alarm": 100, "unit": "C casing or fluid"}},
+      "failure_modes": [
+        {"mode": "Cavitation erosion", "cause": "Operating below required NPSH, off-design flow", "signals": ["vibration", "pressure"], "indicator": "Pitting on vane inlets, noise, head drop"},
+        {"mode": "Abrasive or erosive wear", "cause": "Solids in fluid, high tip speed", "signals": ["hours", "pressure"], "indicator": "Thinning vanes, reduced efficiency"},
+        {"mode": "Corrosion and pitting", "cause": "Aggressive fluid, wrong material, stagnant conditions", "signals": ["hours", "temperature"], "indicator": "Surface roughness, localised pits"},
+        {"mode": "Imbalance from deposits or blade damage", "cause": "Scaling, partial blade loss", "signals": ["vibration"], "indicator": "Rising 1x vibration"},
+        {"mode": "Fatigue cracking of vanes", "cause": "Vane-pass pressure pulsations, resonance", "signals": ["vibration", "hours"], "indicator": "Cracks at vane roots found at inspection"}
+      ],
+      "maintenance": [
+        {"task": "Borescope or visual inspection of vanes and wear surfaces", "interval_h": 8000, "type": "inspect"},
+        {"task": "NPSH margin and operating-point check", "interval_h": 4000, "type": "inspect"},
+        {"task": "Dynamic balance check at overhaul", "interval_h": 25000, "type": "service"},
+        {"task": "Replace or refurbish impeller", "interval_h": 50000, "type": "overhaul"}
+      ],
+      "spares": ["Impeller", "Wear rings", "Key and locknut", "Gaskets"]
+    },
+    {
+      "id": "gas-turbine", "name": "Gas Turbine",
+      "aliases": ["turbine", "turbines", "gas turbines", "turbo generator set", "jet engine", "micro turbine"],
+      "category": "Rotating equipment",
+      "description": "Brayton-cycle machine with compressor, combustor and turbine sections. Hot-gas-path parts degrade by creep, oxidation and thermal fatigue; life is usually counted in equivalent operating hours (EOH) and starts.",
+      "life": {"eta": 45000, "beta": 2.5},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS casing"}, "temperature": {"warn": 100, "alarm": 115, "unit": "C bearing metal"}},
+      "failure_modes": [
+        {"mode": "Hot-section blade creep, oxidation or thermal fatigue", "cause": "High firing temperature, many starts, coating loss", "signals": ["temperature", "hours"], "indicator": "Rising exhaust temperature spread, coating spallation at inspection"},
+        {"mode": "Compressor fouling or erosion", "cause": "Airborne contaminants, inlet filter bypass", "signals": ["pressure", "hours"], "indicator": "Falling pressure ratio and efficiency"},
+        {"mode": "Bearing failure", "cause": "Oil degradation, rotor imbalance, thrust overload", "signals": ["vibration", "temperature"], "indicator": "Rising bearing metal temperature and vibration"},
+        {"mode": "Rotor imbalance or blade loss", "cause": "Foreign object damage, blade liberation", "signals": ["vibration"], "indicator": "Sudden step change in vibration"},
+        {"mode": "Combustor cracking", "cause": "Thermal cycling, flame instability", "signals": ["temperature", "hours"], "indicator": "Exhaust temperature spread, visible cracks at combustion inspection"}
+      ],
+      "maintenance": [
+        {"task": "Borescope inspection", "interval_h": 4000, "type": "inspect"},
+        {"task": "Compressor wash and inlet filter check", "interval_h": 1000, "type": "service"},
+        {"task": "Combustion inspection", "interval_h": 8000, "type": "inspect"},
+        {"task": "Hot-gas-path inspection", "interval_h": 24000, "type": "overhaul"},
+        {"task": "Major overhaul", "interval_h": 48000, "type": "overhaul"}
+      ],
+      "spares": ["Combustion liners", "Transition pieces", "First-stage blades and vanes", "Fuel nozzles", "Bearing set"]
+    },
+    {
+      "id": "steam-turbine", "name": "Steam Turbine",
+      "aliases": ["steam turbines", "condensing turbine", "back pressure turbine"],
+      "category": "Rotating equipment",
+      "description": "Expands steam through stationary and rotating blade rows. Typical degradation: blade erosion and deposits, bearing and oil-system problems, valve sticking and thermal distortion of the rotor.",
+      "life": {"eta": 100000, "beta": 2.5},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS casing"}, "temperature": {"warn": 90, "alarm": 110, "unit": "C bearing metal"}},
+      "failure_modes": [
+        {"mode": "Blade erosion or deposits", "cause": "Wet steam, carry-over, poor steam purity", "signals": ["pressure", "hours"], "indicator": "Falling efficiency, rising stage pressures"},
+        {"mode": "Bearing or oil-whirl problems", "cause": "Oil degradation, misalignment, lightly loaded bearing", "signals": ["vibration", "temperature"], "indicator": "Sub-synchronous vibration, bearing temperature rise"},
+        {"mode": "Rotor bow or thermal distortion", "cause": "Improper warm-up, gland steam problems", "signals": ["vibration", "temperature"], "indicator": "Vibration during run-up"},
+        {"mode": "Valve sticking or steam leaks", "cause": "Deposits, wear, thermal cycling", "signals": ["pressure"], "indicator": "Slow or unstable valve response"}
+      ],
+      "maintenance": [
+        {"task": "Lube-oil analysis and vibration trending", "interval_h": 2000, "type": "inspect"},
+        {"task": "Governor and stop-valve test", "interval_h": 4000, "type": "inspect"},
+        {"task": "Minor overhaul (bearings, seals, valves)", "interval_h": 30000, "type": "service"},
+        {"task": "Major overhaul (rotor and blading)", "interval_h": 100000, "type": "overhaul"}
+      ],
+      "spares": ["Bearing set", "Gland seals", "Governor and stop-valve parts", "Lube-oil filters"]
+    },
+    {
+      "id": "centrifugal-compressor", "name": "Centrifugal Compressor",
+      "aliases": ["compressor", "compressors", "centrifugal compressors", "gas compressor", "turbo compressor", "air compressor"],
+      "category": "Rotating equipment",
+      "description": "Dynamic compressor raising gas pressure with one or more impellers. Sensitive to surge, fouling, seal-gas quality and bearing condition.",
+      "life": {"eta": 80000, "beta": 2.2},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS casing"}, "temperature": {"warn": 90, "alarm": 105, "unit": "C bearing metal"}},
+      "failure_modes": [
+        {"mode": "Surge damage", "cause": "Operation near surge line, poor anti-surge control", "signals": ["pressure", "vibration"], "indicator": "Pressure and flow oscillations, thrust bearing temperature spikes"},
+        {"mode": "Dry-gas seal failure", "cause": "Contaminated seal gas, liquid carry-over", "signals": ["pressure", "temperature", "hours"], "indicator": "Rising seal leakage flow"},
+        {"mode": "Fouling or erosion of impellers", "cause": "Dirty process gas, liquid droplets", "signals": ["pressure", "hours"], "indicator": "Falling polytropic efficiency"},
+        {"mode": "Bearing or thrust-bearing failure", "cause": "Lube-oil issues, axial overload", "signals": ["vibration", "temperature"], "indicator": "Bearing temperature and shaft vibration rise"},
+        {"mode": "Rotor instability", "cause": "Seal or bearing wear, aerodynamic cross-coupling", "signals": ["vibration"], "indicator": "Sub-synchronous vibration"}
+      ],
+      "maintenance": [
+        {"task": "Performance and surge-margin trending", "interval_h": 500, "type": "inspect"},
+        {"task": "Seal-gas filter change and seal leakage check", "interval_h": 4000, "type": "service"},
+        {"task": "Bearing and coupling inspection", "interval_h": 24000, "type": "inspect"},
+        {"task": "Major overhaul", "interval_h": 50000, "type": "overhaul"}
+      ],
+      "spares": ["Dry-gas seal cartridge", "Bearing set", "Thrust pads", "Coupling elements", "Anti-surge valve trim"]
+    },
+    {
+      "id": "reciprocating-compressor", "name": "Reciprocating Compressor",
+      "aliases": ["piston compressor", "reciprocating compressors", "recip compressor", "air compressor piston"],
+      "category": "Rotating equipment",
+      "description": "Positive-displacement compressor with pistons, valves and rod packing. Compressor valves are the most frequent failure item, followed by rings, packing and crankcase bearings.",
+      "life": {"eta": 40000, "beta": 1.8},
+      "limits": {"vibration": {"warn": 11.2, "alarm": 18.0, "unit": "mm/s RMS"}, "temperature": {"warn": 150, "alarm": 175, "unit": "C discharge gas"}},
+      "failure_modes": [
+        {"mode": "Suction or discharge valve failure", "cause": "Fatigue of plates or springs, liquid slugging, fouling", "signals": ["temperature", "pressure", "hours"], "indicator": "Rising discharge temperature, lower stage pressure ratio"},
+        {"mode": "Piston ring or rider band wear", "cause": "Normal wear, poor lubrication, dirty gas", "signals": ["temperature", "pressure", "hours"], "indicator": "Blow-by, falling capacity"},
+        {"mode": "Rod packing leakage", "cause": "Wear, rod scoring", "signals": ["pressure", "hours"], "indicator": "Visible gas leakage at packing vents"},
+        {"mode": "Crankcase or crosshead bearing failure", "cause": "Oil degradation, rod load reversal loss", "signals": ["vibration", "temperature"], "indicator": "Knocking, rising oil temperature"}
+      ],
+      "maintenance": [
+        {"task": "Valve temperature and pressure trend check", "interval_h": 250, "type": "inspect"},
+        {"task": "Lube-oil analysis", "interval_h": 2000, "type": "inspect"},
+        {"task": "Valve inspection or replacement", "interval_h": 8000, "type": "service"},
+        {"task": "Rings, rider bands and packing replacement", "interval_h": 16000, "type": "service"},
+        {"task": "Major overhaul", "interval_h": 40000, "type": "overhaul"}
+      ],
+      "spares": ["Valve plates and springs", "Piston rings and rider bands", "Packing set", "Crosshead shoes", "Bearing set"]
+    },
+    {
+      "id": "rolling-bearing", "name": "Rolling Bearing",
+      "aliases": ["bearing", "bearings", "ball bearing", "roller bearing", "rolling element bearing", "journal bearing"],
+      "category": "Machine element",
+      "description": "Supports rotating shafts. Life follows rolling-contact fatigue (L10 concept) but in practice is cut short by contamination, poor lubrication, misalignment and electrical damage.",
+      "life": {"eta": 60000, "beta": 1.5},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS"}, "temperature": {"warn": 80, "alarm": 95, "unit": "C housing"}},
+      "failure_modes": [
+        {"mode": "Rolling-contact fatigue (spalling)", "cause": "End of fatigue life, overload", "signals": ["vibration", "hours"], "indicator": "Bearing-defect frequencies in vibration spectrum"},
+        {"mode": "Lubrication failure", "cause": "Wrong grease, over or under greasing, high temperature", "signals": ["temperature", "vibration"], "indicator": "Temperature rise, discoloured grease"},
+        {"mode": "Contamination wear", "cause": "Dirt or water ingress, seal failure", "signals": ["vibration", "hours"], "indicator": "Rising broadband vibration, abrasive wear"},
+        {"mode": "Misalignment or shaft fit problems", "cause": "Installation errors, soft foot", "signals": ["vibration", "temperature"], "indicator": "Axial vibration, uneven wear tracks"}
+      ],
+      "maintenance": [
+        {"task": "Vibration and temperature spot check", "interval_h": 500, "type": "inspect"},
+        {"task": "Regrease or oil-sample per OEM schedule", "interval_h": 2000, "type": "service"},
+        {"task": "Seal and housing inspection", "interval_h": 8000, "type": "inspect"},
+        {"task": "Planned bearing replacement", "interval_h": 40000, "type": "overhaul"}
+      ],
+      "spares": ["Bearing (matching designation)", "Seals", "Grease", "Locknut and washer"]
+    },
+    {
+      "id": "gearbox", "name": "Gearbox",
+      "aliases": ["gear", "gears", "gear box", "gear set", "reducer", "speed reducer", "gear drive", "transmission"],
+      "category": "Power transmission",
+      "description": "Transmits and converts torque and speed. Gear surfaces fail by pitting and wear; bearings and lubricant condition decide the actual life.",
+      "life": {"eta": 70000, "beta": 2.0},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS"}, "temperature": {"warn": 85, "alarm": 100, "unit": "C oil sump"}},
+      "failure_modes": [
+        {"mode": "Tooth pitting and wear", "cause": "Surface fatigue, contaminated or wrong oil", "signals": ["vibration", "hours"], "indicator": "Gear-mesh sidebands in spectrum, metal particles in oil"},
+        {"mode": "Scuffing or scoring", "cause": "Lubrication breakdown, overload", "signals": ["temperature"], "indicator": "Oil sump temperature rise"},
+        {"mode": "Tooth breakage", "cause": "Shock loads, fatigue cracks", "signals": ["vibration", "hours"], "indicator": "Impulsive vibration, noise"},
+        {"mode": "Bearing failure", "cause": "Contamination, overload, preload loss", "signals": ["vibration", "temperature"], "indicator": "Bearing-defect frequencies, temperature rise"},
+        {"mode": "Oil degradation or leakage", "cause": "Overheating, seal wear", "signals": ["temperature"], "indicator": "Darkened oil, oil level loss"}
+      ],
+      "maintenance": [
+        {"task": "Oil level, leak, temperature and noise check", "interval_h": 250, "type": "inspect"},
+        {"task": "Oil analysis (viscosity, wear metals, water)", "interval_h": 2000, "type": "inspect"},
+        {"task": "Oil and filter change", "interval_h": 8000, "type": "service"},
+        {"task": "Backlash and tooth-contact inspection", "interval_h": 16000, "type": "inspect"},
+        {"task": "Overhaul with bearing and seal replacement", "interval_h": 50000, "type": "overhaul"}
+      ],
+      "spares": ["Bearing set", "Shaft seals", "Oil filter and breather", "Gear set (long lead item)"]
+    },
+    {
+      "id": "electric-motor", "name": "Electric Motor",
+      "aliases": ["motor", "motors", "induction motor", "ac motor", "electric motors", "drive motor"],
+      "category": "Rotating equipment",
+      "description": "Converts electrical to mechanical power. Life is limited mainly by winding insulation ageing (temperature) and bearing condition; rotor bar and misalignment problems also occur.",
+      "life": {"eta": 60000, "beta": 2.0},
+      "limits": {"vibration": {"warn": 2.8, "alarm": 7.1, "unit": "mm/s RMS"}, "temperature": {"warn": 120, "alarm": 145, "unit": "C winding (Class F)"}},
+      "failure_modes": [
+        {"mode": "Winding insulation degradation", "cause": "Sustained overtemperature, voltage spikes, moisture", "signals": ["temperature", "hours"], "indicator": "Falling insulation resistance, rising winding temperature"},
+        {"mode": "Bearing failure", "cause": "Lubrication issues, shaft currents, misalignment", "signals": ["vibration", "temperature"], "indicator": "Bearing-defect frequencies, housing temperature rise"},
+        {"mode": "Rotor bar cracking", "cause": "Frequent starts, high load", "signals": ["vibration", "hours"], "indicator": "Sidebands around line frequency in current spectrum"},
+        {"mode": "Misalignment or looseness", "cause": "Installation, foundation issues", "signals": ["vibration"], "indicator": "Strong 2x running-speed vibration"},
+        {"mode": "Overload or cooling loss", "cause": "Blocked ventilation, excessive load", "signals": ["temperature"], "indicator": "Temperature rise with current increase"}
+      ],
+      "maintenance": [
+        {"task": "Thermography and vibration check", "interval_h": 2000, "type": "inspect"},
+        {"task": "Bearing regreasing per OEM", "interval_h": 4000, "type": "service"},
+        {"task": "Insulation resistance and polarisation index test", "interval_h": 8000, "type": "inspect"},
+        {"task": "Rewind or replace after condition assessment", "interval_h": 60000, "type": "overhaul"}
+      ],
+      "spares": ["Bearing set", "Terminal box parts", "Cooling fan", "Spare motor for critical drives"]
+    },
+    {
+      "id": "hydraulic-cylinder", "name": "Hydraulic Cylinder",
+      "aliases": ["hydraulic actuator", "hydraulic ram", "hydraulic cylinders", "actuator cylinder"],
+      "category": "Fluid power",
+      "description": "Linear actuator converting hydraulic pressure to force. Seals, rod surface and oil cleanliness dominate life; contamination is the leading cause of premature failure.",
+      "life": {"eta": 25000, "beta": 1.8},
+      "limits": {"vibration": {"warn": 7.1, "alarm": 11.2, "unit": "mm/s RMS"}, "temperature": {"warn": 65, "alarm": 80, "unit": "C hydraulic oil"}},
+      "failure_modes": [
+        {"mode": "Seal wear or leakage", "cause": "Contaminated oil, high temperature, rod scoring", "signals": ["temperature", "pressure", "hours"], "indicator": "External oil leakage, drift under load"},
+        {"mode": "Rod surface damage", "cause": "Abrasive particles, impact, corrosion", "signals": ["hours"], "indicator": "Scoring or pitting on chrome surface"},
+        {"mode": "Oil contamination", "cause": "Dirty filters, ingress past wipers", "signals": ["temperature"], "indicator": "Poor ISO cleanliness code, sluggish response"},
+        {"mode": "Rod bending or buckling", "cause": "Side loads, overpressure", "signals": ["pressure", "vibration"], "indicator": "Uneven stroke, bushing wear"},
+        {"mode": "Cavitation or aeration", "cause": "Air in oil, low reservoir level", "signals": ["vibration", "pressure"], "indicator": "Jerky motion, foamy oil"}
+      ],
+      "maintenance": [
+        {"task": "Leak check and oil cleanliness sample", "interval_h": 500, "type": "inspect"},
+        {"task": "Filter element change", "interval_h": 1000, "type": "service"},
+        {"task": "Rod, wiper and bushing inspection", "interval_h": 4000, "type": "inspect"},
+        {"task": "Seal kit replacement and rebuild", "interval_h": 15000, "type": "overhaul"}
+      ],
+      "spares": ["Seal kit", "Rod wiper", "Bushings", "Filter elements", "Spare cylinder for critical machines"]
+    },
+    {
+      "id": "diesel-engine", "name": "Diesel Engine",
+      "aliases": ["engine", "engines", "ic engine", "internal combustion engine", "diesel", "diesel generator engine"],
+      "category": "Prime mover",
+      "description": "Reciprocating internal combustion engine. Life is governed by ring and liner wear, injector condition, turbocharger health and cooling and lubrication systems.",
+      "life": {"eta": 20000, "beta": 2.5},
+      "limits": {"vibration": {"warn": 11.2, "alarm": 18.0, "unit": "mm/s RMS"}, "temperature": {"warn": 95, "alarm": 105, "unit": "C coolant"}},
+      "failure_modes": [
+        {"mode": "Piston ring and cylinder liner wear", "cause": "Dust ingress, oil dilution, long service", "signals": ["hours", "temperature"], "indicator": "Blow-by, oil consumption, power loss"},
+        {"mode": "Injector fouling or wear", "cause": "Poor fuel quality, filter bypass", "signals": ["temperature", "vibration"], "indicator": "Rough running, smoke, uneven cylinder temperatures"},
+        {"mode": "Turbocharger failure", "cause": "Oil starvation, foreign objects, overspeed", "signals": ["temperature", "vibration"], "indicator": "Whine, smoke, boost loss"},
+        {"mode": "Cooling system failure", "cause": "Blocked radiator, coolant loss, pump wear", "signals": ["temperature"], "indicator": "Coolant temperature rise"},
+        {"mode": "Main or big-end bearing wear", "cause": "Oil degradation, low oil pressure", "signals": ["vibration", "pressure", "hours"], "indicator": "Low oil pressure, knocking"}
+      ],
+      "maintenance": [
+        {"task": "Oil and fuel-filter change", "interval_h": 500, "type": "service"},
+        {"task": "Air-filter and cooling-system check", "interval_h": 250, "type": "inspect"},
+        {"task": "Valve clearance adjustment", "interval_h": 2000, "type": "service"},
+        {"task": "Injector test and service", "interval_h": 4000, "type": "service"},
+        {"task": "Top-end or major overhaul", "interval_h": 15000, "type": "overhaul"}
+      ],
+      "spares": ["Filter set", "Injectors", "Gasket and seal kit", "Turbocharger", "Water pump"]
+    },
+    {
+      "id": "fan-blower", "name": "Fan / Blower",
+      "aliases": ["fan", "fans", "blower", "blowers", "id fan", "fd fan", "cooling fan", "ventilation fan"],
+      "category": "Rotating equipment",
+      "description": "Moves air or gas. Deposits and erosion on blades cause imbalance; bearings and belt or coupling drives are the other main failure sources.",
+      "life": {"eta": 50000, "beta": 2.0},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS"}, "temperature": {"warn": 80, "alarm": 95, "unit": "C bearing"}},
+      "failure_modes": [
+        {"mode": "Imbalance from deposits or erosion", "cause": "Dust build-up, abrasive gas", "signals": ["vibration", "hours"], "indicator": "Rising 1x vibration, gradual trend"},
+        {"mode": "Bearing failure", "cause": "Contamination, over-greasing, misalignment", "signals": ["vibration", "temperature"], "indicator": "Bearing temperature rise, defect frequencies"},
+        {"mode": "Belt or coupling wear", "cause": "Misalignment, wrong tension", "signals": ["vibration", "temperature"], "indicator": "Belt dust, slip noise"},
+        {"mode": "Blade fatigue cracking", "cause": "Resonance, stall, corrosion", "signals": ["vibration", "hours"], "indicator": "Cracks at blade roots"}
+      ],
+      "maintenance": [
+        {"task": "Vibration check and visual inspection for deposits", "interval_h": 500, "type": "inspect"},
+        {"task": "Bearing lubrication", "interval_h": 2000, "type": "service"},
+        {"task": "Belt or coupling inspection", "interval_h": 4000, "type": "inspect"},
+        {"task": "Wheel cleaning, balancing and blade inspection", "interval_h": 16000, "type": "overhaul"}
+      ],
+      "spares": ["Bearing set", "Belts or coupling element", "Spare wheel for critical fans"]
+    },
+    {
+      "id": "shaft-coupling", "name": "Shaft and Coupling",
+      "aliases": ["shaft", "shafts", "coupling", "couplings", "drive shaft", "flexible coupling", "propeller shaft"],
+      "category": "Power transmission",
+      "description": "Transmit torque between machines. Fatigue cracking, coupling element wear, fretting at keyways and misalignment-induced loads are the typical life limiters.",
+      "life": {"eta": 100000, "beta": 2.5},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS"}, "temperature": {"warn": 70, "alarm": 90, "unit": "C coupling or adjacent bearing"}},
+      "failure_modes": [
+        {"mode": "Fatigue cracking of shaft", "cause": "Cyclic bending, stress raisers, misalignment", "signals": ["vibration", "hours"], "indicator": "Rising 1x and 2x vibration, crack indications in NDT"},
+        {"mode": "Coupling element wear", "cause": "Misalignment, overload, ageing of elastomer", "signals": ["vibration", "temperature"], "indicator": "Dust or debris, increased vibration"},
+        {"mode": "Keyway fretting or looseness", "cause": "Torque reversals, poor fit", "signals": ["vibration"], "indicator": "Backlash, knocking"},
+        {"mode": "Torsional overload", "cause": "Start-up shocks, process upsets", "signals": ["hours"], "indicator": "Permanent twist or sheared pins"}
+      ],
+      "maintenance": [
+        {"task": "Laser alignment check", "interval_h": 8000, "type": "inspect"},
+        {"task": "Coupling element inspection", "interval_h": 8000, "type": "inspect"},
+        {"task": "NDT of shaft at keyways and shoulders", "interval_h": 40000, "type": "inspect"},
+        {"task": "Replace coupling elements", "interval_h": 30000, "type": "service"}
+      ],
+      "spares": ["Coupling elements", "Keys and bolts", "Spare shaft for critical drives"]
+    },
+    {
+      "id": "heat-exchanger", "name": "Heat Exchanger",
+      "aliases": ["heat exchangers", "condenser", "cooler", "shell and tube heat exchanger", "radiator", "evaporator"],
+      "category": "Static equipment",
+      "description": "Transfers heat between fluids. Fouling raises pressure drop and lowers duty; tubes fail by corrosion, erosion and flow-induced vibration; gaskets and seals leak with age.",
+      "life": {"eta": 150000, "beta": 2.0},
+      "limits": {"temperature": {"warn": 150, "alarm": 200, "unit": "C process side"}},
+      "failure_modes": [
+        {"mode": "Fouling", "cause": "Scale, biological growth, process deposits", "signals": ["pressure", "temperature", "hours"], "indicator": "Rising pressure drop, falling heat duty"},
+        {"mode": "Tube corrosion or pitting", "cause": "Aggressive fluid, oxygen, chlorides", "signals": ["hours", "temperature"], "indicator": "Tube leaks, wall-thickness loss in eddy-current test"},
+        {"mode": "Flow-induced tube vibration", "cause": "High velocity, loose baffles", "signals": ["vibration"], "indicator": "Tube fretting at baffles"},
+        {"mode": "Gasket or seal leakage", "cause": "Thermal cycling, ageing", "signals": ["temperature", "pressure"], "indicator": "External leakage, cross-contamination"}
+      ],
+      "maintenance": [
+        {"task": "Pressure-drop and approach-temperature trending", "interval_h": 500, "type": "inspect"},
+        {"task": "Cleaning (chemical or mechanical)", "interval_h": 8000, "type": "service"},
+        {"task": "Eddy-current tube inspection", "interval_h": 24000, "type": "inspect"},
+        {"task": "Hydrotest and tube bundle repair or retube", "interval_h": 100000, "type": "overhaul"}
+      ],
+      "spares": ["Gasket set", "Spare tubes and plugs", "Sacrificial anodes"]
+    },
+    {
+      "id": "generic-mechanical-component", "name": "Generic Mechanical Component",
+      "aliases": ["generic"],
+      "category": "General",
+      "description": "Fallback profile used when a component is not in the dataset or the knowledge base. It uses conservative, generic life and condition limits and general maintenance practice. Treat all outputs as rough guidance.",
+      "life": {"eta": 40000, "beta": 2.0},
+      "limits": {"vibration": {"warn": 4.5, "alarm": 7.1, "unit": "mm/s RMS"}, "temperature": {"warn": 80, "alarm": 95, "unit": "C surface or bearing"}},
+      "failure_modes": [
+        {"mode": "Wear", "cause": "Normal service, abrasive contamination", "signals": ["hours", "vibration"], "indicator": "Gradual rise in vibration or clearances"},
+        {"mode": "Fatigue", "cause": "Cyclic loading, stress concentrations", "signals": ["vibration", "hours"], "indicator": "Cracks found at inspection"},
+        {"mode": "Lubrication breakdown", "cause": "Contamination, wrong lubricant, overheating", "signals": ["temperature", "vibration"], "indicator": "Temperature rise, oil degradation"},
+        {"mode": "Corrosion", "cause": "Environment, moisture, aggressive media", "signals": ["hours", "temperature"], "indicator": "Surface pitting, material loss"},
+        {"mode": "Misalignment or imbalance", "cause": "Installation, deposits, loosening", "signals": ["vibration"], "indicator": "Elevated 1x or 2x vibration"}
+      ],
+      "maintenance": [
+        {"task": "Routine visual, vibration and temperature check", "interval_h": 500, "type": "inspect"},
+        {"task": "Lubrication check per OEM", "interval_h": 2000, "type": "service"},
+        {"task": "Condition-based inspection of wear parts", "interval_h": 8000, "type": "inspect"},
+        {"task": "Planned overhaul per OEM or criticality analysis", "interval_h": 40000, "type": "overhaul"}
+      ],
+      "spares": ["Critical wear parts per criticality analysis", "Bearings and seals", "Lubricants and filters"]
+    }
+  ]
+}

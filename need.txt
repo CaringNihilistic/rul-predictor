@@ -1,0 +1,3 @@
+components type
+prediction
+ui - clean, responsiveness, white mode, clean inputs

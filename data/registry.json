@@ -1,0 +1,21 @@
+{
+  "datasets": [
+    {
+      "id": "construction_machines",
+      "name": "Construction machine components",
+      "path": "construction_machine_data.csv",
+      "type_col": "Component_Type",
+      "fixed_type": null,
+      "target": "Remaining_Useful_Life",
+      "features": [
+        "Vibration",
+        "Temperature",
+        "Pressure",
+        "Operating_Hours"
+      ],
+      "id_col": "Component_ID",
+      "source": "Kaggle",
+      "builtin": true
+    }
+  ]
+}
