@@ -1,5 +1,23 @@
+import sys
+import time
+from pathlib import Path
+
 import streamlit as st
 from dotenv import load_dotenv
+
+# Streamlit re-reads this script and the page scripts on every run, but keeps imported modules in memory.
+# After a git pull on Streamlit Cloud that leaves a stale rul.* next to new page code (ImportError).
+# Drop the rul package from the module cache whenever any of its files is newer than when it was loaded.
+_pkg = sys.modules.get("rul")
+if _pkg is not None:
+    _newest = max(p.stat().st_mtime for p in (Path(__file__).parent / "rul").rglob("*.py"))
+    if _newest > getattr(_pkg, "_loaded_at", 0):
+        for _m in [m for m in sys.modules if m == "rul" or m.startswith("rul.")]:
+            del sys.modules[_m]
+import rul  # noqa: E402
+
+if not hasattr(rul, "_loaded_at"):
+    rul._loaded_at = time.time()
 
 load_dotenv()
 
