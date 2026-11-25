@@ -1,20 +1,24 @@
+from html import escape as esc
+
 import pandas as pd
 import streamlit as st
 
 from rul.model import train
 from rul.registry import add_dataset, load_registry, remove_dataset
 from rul.state import get_kb, get_models, refresh
-from rul.ui import section
+from rul.icons import component_icon, icon
+from rul.ui import html, page_header, subhead
 
 kb = get_kb()
 models, errors = get_models()
 
-section("Data & knowledge", "Everything the predictor learns from. Add any run-to-failure CSV and it is used immediately.", "Data")
+page_header("Data and knowledge.", "Everything the predictor learns from. Add any run-to-failure CSV and it is used immediately.", "Data", 5, "database",
+            [("table", f"{len(models)} dataset(s)"), ("books", f"{len(kb.known)} profiles"), ("upload", "CSV upload")])
 for e in errors:
     st.error(e)
 
 # ---------------- Registered datasets ----------------
-st.markdown("### Registered datasets")
+subhead("Registered datasets", "database", f"{len(models)} loaded")
 for dm in models:
     e, m = dm.entry, dm.typed_metrics
     with st.expander(f"{e['name']}  ·  {dm.profile['n_rows']:,} rows  ·  {len(dm.types)} component type(s)"):
@@ -31,7 +35,7 @@ for dm in models:
                 st.rerun()
 
 # ---------------- Add dataset ----------------
-st.markdown("### Add a dataset")
+subhead("Add a dataset", "upload", "CSV")
 st.caption("Best format: one row per component snapshot with sensor columns and its remaining useful life. "
            "Public sources include Kaggle and the NASA prognostics repository.")
 up = st.file_uploader("Upload a CSV file", type=["csv"])
@@ -79,21 +83,22 @@ if up:
                     st.rerun()
 
 # ---------------- Knowledge base ----------------
-st.markdown("### Engineering knowledge base")
+subhead("Engineering knowledge base", "books", f"{len(kb.known)} profiles")
 st.caption(kb.meta.get("disclaimer", ""))
 pick = st.selectbox("Component profile", kb.names())
 item = next(i for i in kb.known if i["name"] == pick)
-st.write(f"**{item['name']}** · {item['category']}")
-st.write(item["description"])
+html(f"<div class='kbhead'><div class='ibox'>{icon(component_icon(item['name']))}</div><div>"
+     f"<div class='kn'>{esc(item['name'])}</div><div class='kc'>{esc(item['category'])}</div><p>{esc(item['description'])}</p></div></div>")
 k1, k2 = st.columns(2)
 k1.metric("Characteristic life (η)", f"{item['life']['eta']:,} h")
 k2.metric("Weibull shape (β)", f"{item['life']['beta']}")
 if item.get("limits"):
     st.dataframe(pd.DataFrame([{"Parameter": k, "Warning": v["warn"], "Alarm": v["alarm"], "Unit": v["unit"]}
                                for k, v in item["limits"].items()]), hide_index=True)
-st.markdown("**Failure modes**")
+subhead("Failure modes", "alert-triangle")
 st.dataframe(pd.DataFrame(item["failure_modes"])[["mode", "cause", "indicator"]], hide_index=True)
-st.markdown("**Maintenance tasks**")
+subhead("Maintenance tasks", "tools")
 st.dataframe(pd.DataFrame(item["maintenance"]), hide_index=True)
-st.markdown("**Critical spares:** " + ", ".join(item["spares"]))
+subhead("Critical spares", "package")
+st.markdown(", ".join(item["spares"]))
 st.caption("To add or correct a component, edit `rul/kb/components.json` and restart the app.")

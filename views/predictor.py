@@ -12,7 +12,8 @@ from rul.engine import CONTEXT_OPTIONS
 from rul.knowledge import resolve_component
 from rul.pipeline import run_assessment
 from rul.state import get_kb, get_models, secret
-from rul.ui import html, metric_card, pill, section
+from rul.icons import component_icon, icon
+from rul.ui import html, metric_card, page_header, pill, section, subhead
 
 kb = get_kb()
 models, train_errors = get_models()
@@ -26,10 +27,12 @@ URGENCY_LABEL = {"immediate": "Immediate", "within_1_week": "Within 1 week",
 URGENCY_KIND = {"immediate": "critical", "within_1_week": "high",
                 "next_planned_shutdown": "medium", "routine": "low"}
 
-section("Asset health assessment",
-        "Choose a component type from the list, or pick Other and type any mechanical component. "
-        "Components in the dataset use the trained model; everything else uses the engineering knowledge base.",
-        "Predictor")
+page_header("Asset health assessment.",
+            "Choose a component type from the list, or pick Other and type any mechanical component. "
+            "Components in the dataset use the trained model; everything else uses the engineering knowledge base.",
+            "Predictor", 4, "gauge",
+            [("manual-gearbox", f"{len(kb.known)} profiles"), ("cpu", "AI optional"), ("file-download", "PDF report")])
+subhead("Component", "settings", "Step 1")
 for e in train_errors:
     st.error(f"Dataset problem: {e}")
 
@@ -107,7 +110,7 @@ if res:
     if route == "ml":
         ref = res["dm"].profile["by_type"].get(res["dtype"], res["dm"].profile["global"])
     with st.form("assess"):
-        st.markdown("**Condition readings**")
+        subhead("Condition readings", "activity", "Step 2")
         cols = st.columns(min(len(features), 4))
         for i, f in enumerate(features):
             unit = FEATURE_UNITS.get(f, "")
@@ -164,16 +167,16 @@ if R:
         st.stop()
 
     A, an = R["assessment"], R["analysis"]
-    section(R["label"], R["match_desc"].capitalize() + ".", "Result")
+    section(R["label"], R["match_desc"].capitalize() + ".", "Result", ic=component_icon(R["label"]))
 
     m1, m2, m3, m4 = st.columns(4)
-    m1.markdown(metric_card("Remaining useful life", f"{A['rul']:,.0f} h", "point estimate"), unsafe_allow_html=True)
-    m2.markdown(metric_card("P10 – P90 range", f"{A['low']:,.0f}–{A['high']:,.0f}", "hours"), unsafe_allow_html=True)
+    m1.markdown(metric_card("Remaining life", f"{A['rul']:,.0f} h", "point estimate", "hourglass"), unsafe_allow_html=True)
+    m2.markdown(metric_card("P10 – P90 range", f"{A['low']:,.0f}–{A['high']:,.0f}", "hours", "ruler-measure"), unsafe_allow_html=True)
     m3.markdown(
-        f"<div class='mc'><div class='ml'>Health score</div><div class='mv'>{A['health']:.0f}%</div>"
+        f"<div class='mc'><div class='ml'><span>Health score</span>{icon('heartbeat')}</div><div class='mv'>{A['health']:.0f}%</div>"
         f"<div class='bar'><div style='width:{A['health']:.0f}%'></div></div></div>", unsafe_allow_html=True)
     m4.markdown(
-        f"<div class='mc'><div class='ml'>Risk · Confidence</div><div style='margin-top:.55rem'>"
+        f"<div class='mc'><div class='ml'><span>Risk · Confidence</span>{icon('shield-check')}</div><div style='margin-top:.55rem'>"
         f"{pill(A['risk'], A['risk'])} &nbsp; {pill(A['confidence'], {'high': 'low', 'medium': 'medium', 'low': 'high'}[A['confidence']])}"
         f"</div><div class='ms' style='margin-top:.4rem'>{esc(A['method_label'])}</div></div>", unsafe_allow_html=True)
 
@@ -181,7 +184,7 @@ if R:
     if A["latest_date"]:
         when += f" (around <b>{A['latest_date']:%d %b %Y}</b> at the stated utilisation)"
     kind = "banner warn" if A["risk"] in ("high", "critical") else "banner"
-    html(f"<div class='{kind}'>Recommended: schedule intervention {when}. This is the pessimistic (P10) estimate.</div>")
+    html(f"<div class='{kind}'>{icon('tools')}<div>Recommended: schedule intervention {when}. This is the pessimistic (P10) estimate.</div></div>")
 
     for w in R["harness"].warnings:
         st.warning(w)
@@ -197,7 +200,7 @@ if R:
             st.info(R["ai_error"])
         st.markdown(an["summary"])
         if an["clarifying_questions"]:
-            st.markdown("**The assistant would like to know**")
+            subhead("The assistant would like to know", "help-circle")
             st.info("\n\n".join(f"• {q}" for q in an["clarifying_questions"]))
         if an["caveats"]:
             st.caption("Caveats: " + " · ".join(an["caveats"]))
@@ -212,7 +215,8 @@ if R:
         df = pd.DataFrame(A["params"])
         df["Status"] = df["Status"].map(lambda s: STATUS_ICON.get(s, s))
         st.dataframe(df, hide_index=True)
-        st.markdown("**Sensitivity:** change in RUL (hours) if one reading moves by ±20%")
+        subhead("Sensitivity", "adjustments-alt", "±20% per reading")
+        st.caption("Change in RUL (hours) if one reading moves by ±20%.")
         st.dataframe(R["sensitivity"], hide_index=True)
         if R["trend"]:
             t = R["trend"]
@@ -221,7 +225,7 @@ if R:
                     f"({t['verdict']}; 1.0 = on schedule).")
         if R["history"]:
             hist = pd.DataFrame(R["history"])[["ts", "hours", "rul", "low", "risk"]]
-            st.markdown(f"**History for {R['tag']}**")
+            subhead(f"History for {R['tag']}", "clock")
             st.dataframe(hist, hide_index=True)
 
     with t_fail:
@@ -240,10 +244,10 @@ if R:
                 for a in group:
                     st.markdown(f"- {a.get('action', '')}" + (f" — *{a['reason']}*" if a.get("reason") else ""))
         if an["spares_to_stock"]:
-            st.markdown("**Spares to stock**")
+            subhead("Spares to stock", "package")
             st.markdown("\n".join(f"- {s}" for s in an["spares_to_stock"]))
         if an["monitoring"]:
-            st.markdown("**What to monitor**")
+            subhead("What to monitor", "eye")
             st.markdown("\n".join(f"- {s}" for s in an["monitoring"]))
 
     with t_cost:
@@ -258,20 +262,20 @@ if R:
             f"Expected extra cost ({CURRENCY})": f"{r['Expected extra cost']:,.0f}",
         } for r in C["rows"]])
         st.dataframe(rows, hide_index=True)
-        st.markdown("**Probability of failure over time**")
+        subhead("Probability of failure over time", "trending-down")
         st.area_chart(A["curve"], x="Hours from now", y="Probability of failure (%)")
 
     with t_ev:
-        st.markdown("**Method**")
+        subhead("Method", "math-function")
         st.markdown("\n".join(f"- {n}" for n in A["notes"]))
         if R["cross_check"] is not None:
             st.info(f"Cross-check: the engineering (Weibull) estimate for this component class gives "
                     f"about **{R['cross_check']:,.0f} h**, versus **{A['rul']:,.0f} h** from the data-trained model. "
                     "A large gap means the dataset and typical industry life differ; ask which to trust.")
         if R["analogues"] is not None:
-            st.markdown("**Most similar historical records in the dataset**")
+            subhead("Most similar historical records", "database")
             st.dataframe(R["analogues"], hide_index=True)
-        st.markdown("**Knowledge-base excerpts retrieved for the AI**")
+        subhead("Knowledge-base excerpts retrieved for the AI", "books")
         for c in R["chunks"]:
             with st.expander(f"{c['id']}" + ("  (related component)" if c.get("related") else "")):
                 st.write(c["text"])
