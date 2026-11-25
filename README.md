@@ -5,6 +5,8 @@ Mechanical Engineering college project (Kaushalendra Singh, Abdul Rahman, Ayush 
 
 **Live app:** https://rul-predictor-hddsjh6zqnqbmiricwvedt.streamlit.app/
 
+![RUL Predictor home page](docs/screenshot.png)
+
 ## Run
 ```bash
 python -m venv .venv && source .venv/bin/activate
