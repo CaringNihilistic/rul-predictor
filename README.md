@@ -7,6 +7,10 @@ Mechanical Engineering college project (Kaushalendra Singh, Abdul Rahman, Ayush 
 
 ![RUL Predictor home page](docs/screenshot.png)
 
+On mobile:
+
+<img src="docs/screenshot-mobile.png" alt="RUL Predictor home page on mobile" width="300">
+
 ## Run
 ```bash
 python -m venv .venv && source .venv/bin/activate
