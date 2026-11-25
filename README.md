@@ -3,6 +3,8 @@
 Remaining Useful Life Prediction of Mechanical Components Using Machine Learning.
 Mechanical Engineering college project (Kaushalendra Singh, Abdul Rahman, Ayush Yadav).
 
+**Live app:** https://rul-predictor-hddsjh6zqnqbmiricwvedt.streamlit.app/
+
 ## Run
 ```bash
 python -m venv .venv && source .venv/bin/activate
